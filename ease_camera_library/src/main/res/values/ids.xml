@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--相机-->
+    <item name="photo_quiet" type="id" />
+    <item name="photo_save" type="id" />
+</resources>

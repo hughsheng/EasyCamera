@@ -1,9 +1,7 @@
 package tl.com.ease_camera_library;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
-import android.hardware.camera2.CameraCharacteristics;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -83,8 +81,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     album_iv = view.findViewById(R.id.album_iv);
     camera_iv = view.findViewById(R.id.camera_iv);
     change_camera_iv = view.findViewById(R.id.change_camera_iv);
-    cameraManagerUtil = new CameraManagerUtil(mBackgroundThread, mBackgroundHandler, getActivity
-        (), camera_sv.getHolder());
+    cameraManagerUtil = new CameraManagerUtil(mBackgroundHandler, null, null, null, null,
+        getActivity(), camera_sv.getHolder());
     setListener();
   }
 
@@ -177,7 +175,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
       case PermisionUtils.REQUEST_CAMERA:
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
           startBackgroundThread();
-          cameraManagerUtil = new CameraManagerUtil(mBackgroundThread, mBackgroundHandler,
+          cameraManagerUtil = new CameraManagerUtil(mBackgroundHandler, null, null, null, null,
               getActivity(), camera_sv.getHolder());
           startPreview(CAMERA_BACK_ID);
         } else {

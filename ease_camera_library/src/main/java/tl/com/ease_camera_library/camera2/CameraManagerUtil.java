@@ -1,7 +1,7 @@
 package tl.com.ease_camera_library.camera2;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,13 +16,14 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import static tl.com.ease_camera_library.camera2.Camera2Fragment.TAG;
 
 /**
  * Created by tl on 2018-8-28
@@ -30,22 +31,42 @@ import java.util.Arrays;
  */
 public class CameraManagerUtil {
 
-  private HandlerThread mBackgroundThread;
-  private Handler mBackgroundHandler;
+  private Handler previewHandler;
+  private Handler photoHandler;
+  private Handler qrHandler;
+  private Handler faceHandler;
+  private Handler videoHander;
   private CameraDevice mCameraDevice;
   private CameraManager manager;
   private ImageReader mImageReader;
-  private Activity activity;
+  private Context context;
   private SurfaceHolder holder;
   private CameraCaptureSession mCameraCaptureSession;
 
-  public CameraManagerUtil(HandlerThread mBackgroundThread, Handler mBackgroundHandler, Activity
-      activity, SurfaceHolder holder) {
-    this.mBackgroundHandler = mBackgroundHandler;
-    this.mBackgroundThread = mBackgroundThread;
-    this.activity = activity;
+  private String faceFrontCameraId;
+  private int faceFrontCameraOrientation;
+  private CameraCharacteristics frontCameraCharacteristics;
+
+  private String faceBackCameraId;
+  private int faceBackCameraOrientation;
+  private CameraCharacteristics backCameraCharacteristics;
+
+  private int cameraNum;
+
+  public CameraManagerUtil(Handler previewHandler,
+                           Handler photoHandler,
+                           Handler qrHandler,
+                           Handler faceHandler,
+                           Handler videoHander,
+                           Context context, SurfaceHolder holder) {
+    this.previewHandler = previewHandler;
+    this.photoHandler = photoHandler;
+    this.qrHandler = qrHandler;
+    this.faceHandler = faceHandler;
+    this.videoHander = videoHander;
+    this.context = context;
     this.holder = holder;
-    manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+    getCameraInfo();
   }
 
   /**
@@ -57,7 +78,7 @@ public class CameraManagerUtil {
   public void openCamera(int cameraID) {
     if (manager != null && checkCamera(cameraID)) {
       try {
-        manager.openCamera("" + cameraID, mStateCallback, mBackgroundHandler);
+        manager.openCamera("" + cameraID, mStateCallback, previewHandler);
       } catch (CameraAccessException e) {
         e.printStackTrace();
       }
@@ -129,7 +150,7 @@ public class CameraManagerUtil {
 
         }
       }
-    }, mBackgroundHandler);
+    }, photoHandler);
 
   }
 
@@ -152,7 +173,7 @@ public class CameraManagerUtil {
       CaptureRequest previewRequest = previewRequestBuilder.build();
       // 创建CameraCaptureSession，该对象负责管理处理预览请求和拍照请求
       mCameraDevice.createCaptureSession(Arrays.asList(mSurfaceHolder.getSurface(), mImageReader
-          .getSurface()), getPreViewSessionCallback(previewRequest), mBackgroundHandler);
+          .getSurface()), getPreViewSessionCallback(previewRequest), null);
     } catch (CameraAccessException e) {
       e.printStackTrace();
     }
@@ -182,7 +203,7 @@ public class CameraManagerUtil {
 //          previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest
 //              .CONTROL_AE_MODE_ON_AUTO_FLASH);
           // 显示预览
-          mCameraCaptureSession.setRepeatingRequest(previewRequest, null, null);
+          mCameraCaptureSession.setRepeatingRequest(previewRequest, null, previewHandler);
         } catch (CameraAccessException e) {
           e.printStackTrace();
         }
@@ -195,7 +216,81 @@ public class CameraManagerUtil {
     };
   }
 
+  /**
+   * 获取相机参数
+   */
+  private void getCameraInfo() {
+    manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+    try {
+      if (manager != null) {
+        final String[] ids = manager.getCameraIdList();
+        cameraNum = ids.length;
+        for (String id : ids) {
+          final CameraCharacteristics characteristics = manager.getCameraCharacteristics(id);
 
+          final int orientation = characteristics.get(CameraCharacteristics.LENS_FACING);
+          if (orientation == CameraCharacteristics.LENS_FACING_FRONT) {
+            faceFrontCameraId = id;
+            faceFrontCameraOrientation = characteristics.get(CameraCharacteristics
+                .SENSOR_ORIENTATION);
+            frontCameraCharacteristics = characteristics;
+          } else {
+            faceBackCameraId = id;
+            faceBackCameraOrientation = characteristics.get(CameraCharacteristics
+                .SENSOR_ORIENTATION);
+            backCameraCharacteristics = characteristics;
+          }
+        }
+      }
+    } catch (Exception e) {
+      Log.e(TAG, "Error during camera initialize");
+    }
+
+  }
+
+
+  /**
+   * 判断是否使用camera2 API
+   *
+   * @param mContext context
+   * @return boolean
+   */
+  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+  public static boolean hasCamera2(Context mContext) {
+    if (mContext == null) return false;
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return false;
+    try {
+      CameraManager manager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
+      String[] idList = manager.getCameraIdList();
+      boolean notFull = true;
+      if (idList.length == 0) {
+        notFull = false;
+      } else {
+        for (final String str : idList) {
+          if (str == null || str.trim().isEmpty()) {
+            notFull = false;
+            break;
+          }
+          final CameraCharacteristics characteristics = manager.getCameraCharacteristics(str);
+
+          final int supportLevel = characteristics.get(CameraCharacteristics
+              .INFO_SUPPORTED_HARDWARE_LEVEL);
+          if (supportLevel == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY) {
+            notFull = false;
+            break;
+          }
+        }
+      }
+      return notFull;
+    } catch (Throwable ignore) {
+      return false;
+    }
+  }
+
+
+  /**
+   * 关闭摄像头
+   */
   public void closeCamera() {
     if (null != mCameraCaptureSession) {
       mCameraCaptureSession.close();
