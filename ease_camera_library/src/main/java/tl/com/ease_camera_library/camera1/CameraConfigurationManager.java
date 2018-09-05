@@ -17,6 +17,7 @@ package tl.com.ease_camera_library.camera1;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.Log;
@@ -28,6 +29,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import tl.com.ease_camera_library.util.ConstanceValues;
 
 /**
  * 描述: 该类主要负责设置相机的参数信息，获取最佳的预览界面
@@ -51,6 +54,7 @@ public final class CameraConfigurationManager {
     }
 
     public void initFromCameraParameters(Camera camera) {
+        camera.enableShutterSound(true);
         Camera.Parameters parameters = camera.getParameters();
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = manager.getDefaultDisplay();
@@ -101,10 +105,12 @@ public final class CameraConfigurationManager {
         if (safeMode) {
             Log.w(TAG, "In camera config safe mode -- most settings will not be honored");
         }
-
+        parameters.setPreviewFormat(ImageFormat.NV21);
         parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
+       // parameters.setPreviewSize(ConstanceValues.PREVIEW_WIDTH, ConstanceValues.PREVIEW_HEIGHT);
+        parameters.setPictureSize(cameraResolution.x, cameraResolution.y);
+        setAutoFocus(parameters);
         camera.setParameters(parameters);
-
         Camera.Parameters afterParameters = camera.getParameters();
         Camera.Size afterSize = afterParameters.getPreviewSize();
         if (afterSize != null && (cameraResolution.x != afterSize.width || cameraResolution.y != afterSize.height)) {
@@ -214,5 +220,17 @@ public final class CameraConfigurationManager {
         Log.i(TAG, "No suitable preview sizes, using default: " + defaultSize);
 
         return defaultSize;
+    }
+
+
+    /**
+     * 判断是否可以设置自动对焦
+     *
+     * @param cameraParameters
+     */
+    public static void setAutoFocus(Camera.Parameters cameraParameters) {
+        List<String> focusModes = cameraParameters.getSupportedFocusModes();
+        if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+            cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
     }
 }

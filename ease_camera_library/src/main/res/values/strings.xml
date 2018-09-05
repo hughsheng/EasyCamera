@@ -4,4 +4,6 @@
     <string name="capture">拍照</string>
     <string name="photography">摄像</string>
     <string name="face">人脸识别</string>
+    <string name="unclear">未获取到清晰的人脸，请保持静止</string>
+    <string name="imperfect">未获取到完整的人脸,请尽量保证人脸完全显示在屏幕上</string>
 </resources>

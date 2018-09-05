@@ -8,7 +8,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
-import java.util.List;
+
+import tl.com.ease_camera_library.util.BitmapUtil;
 
 /**
  * Created by tl on 2018-8-31
@@ -22,9 +23,11 @@ public class CameraManager {
   private int currentCamera = -1;
   private CameraConfigurationManager configurationManager;
   private boolean isInitParms = false;
+  private CameraListener listener;
 
-  public CameraManager(Context context) {
+  public CameraManager(Context context, CameraListener listener) {
     configurationManager = new CameraConfigurationManager(context);
+    this.listener = listener;
   }
 
 
@@ -62,6 +65,14 @@ public class CameraManager {
 
 
   /**
+   * 设置相机预览回调
+   * @param callback callback
+   */
+  public void setPreviewCallback(Camera.PreviewCallback callback) {
+    camera.setOneShotPreviewCallback(callback);
+  }
+
+  /**
    * 开启预览
    */
   public void startPreview(SurfaceHolder holder) {
@@ -69,10 +80,10 @@ public class CameraManager {
       try {
 
         if (!isInitParms) {
-          configurationManager.initFromCameraParameters(camera);//配置预览尺寸
+          configurationManager.initFromCameraParameters(camera);//默认摄像头是横向的，需要替换屏幕宽高
         }
 
-        configurationManager.setDesiredCameraParameters(camera, false);
+        configurationManager.setDesiredCameraParameters(camera, false);//配置预览尺寸
         camera.setPreviewDisplay(holder);
         camera.startPreview();
       } catch (IOException e) {
@@ -127,8 +138,6 @@ public class CameraManager {
 
   /**
    * 切换摄像头
-   *
-   * @throws IOException
    */
   public void changeCamera(SurfaceHolder holder) {
     closeCamera();
@@ -171,23 +180,20 @@ public class CameraManager {
    */
   public void takePhoto() {
     if (camera != null) {
-      Camera.Parameters parameters = camera.getParameters();
-      List<Camera.Size> supportedSizes = parameters.getSupportedPictureSizes();
-      Camera.Size sizePicture = (supportedSizes.get((supportedSizes.size() - 1) / 2));
-      parameters.setPictureSize(sizePicture.width, sizePicture.height);
-      camera.setParameters(parameters);
-
       camera.takePicture(null, null, new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-          Bitmap roateBitmap = null;
           try {
             Bitmap originBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            Bitmap photoBitmap;
             if (currentCamera == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-//              Bitmap mirrorBitmap = FileUtils.mirrorImg(originBitmap);
-//              roateBitmap = FileUtils.rotateBitmap(mirrorBitmap, 90);
+              Bitmap mirrorBitmap = BitmapUtil.mirrorImg(originBitmap);
+              photoBitmap = BitmapUtil.rotateBitmapByDegree(mirrorBitmap, 90);
             } else {
-//              roateBitmap = FileUtils.rotateBitmapByDegree(originBitmap, 90);
+              photoBitmap = BitmapUtil.rotateBitmapByDegree(originBitmap, 90);
+            }
+            if (photoBitmap != null) {
+              listener.showPhoto(photoBitmap);
             }
             camera.startPreview();
 
@@ -214,5 +220,11 @@ public class CameraManager {
       }
     }
   }
+
+
+  interface CameraListener {
+    void showPhoto(Bitmap photo);
+  }
+
 
 }

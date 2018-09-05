@@ -1,9 +1,6 @@
 package tl.com.ease_camera_library.camera2;
 
-import android.app.Activity;
-import android.support.annotation.NonNull;
-
-import tl.com.ease_camera_library.BaseFragment;
+import tl.com.ease_camera_library.base.BaseFragment;
 
 
 /**

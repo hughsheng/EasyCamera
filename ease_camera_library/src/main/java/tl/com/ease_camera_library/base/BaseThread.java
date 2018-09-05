@@ -1,4 +1,4 @@
-package tl.com.ease_camera_library;
+package tl.com.ease_camera_library.base;
 
 /**
  * Created by tl on 2018-8-30
@@ -15,25 +15,36 @@ public class BaseThread extends Thread {
 
     try {
       while (true) {
-        synchronized (this) {
-          while (isPause) {
+        if (isPause) {
+          synchronized (this) {
             wait();
           }
         }
+
         Thread.sleep(DETECH_TIME);
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
+
+
+  }
+
+  public boolean isPause() {
+    return isPause;
   }
 
   public void pause() {
-    isPause = true;
+      isPause = true;
   }
 
   public void reStart() {
-    isPause = false;
-    notify();
+    if (isPause) {
+      isPause = false;
+      synchronized (this) {
+        notify();
+      }
+    }
   }
 
   public void close() {

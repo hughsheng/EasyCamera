@@ -1,4 +1,4 @@
-package tl.com.ease_camera_library;
+package tl.com.ease_camera_library.interfaces;
 
 /**
  * Created by tl on 2018-8-31
@@ -6,15 +6,18 @@ package tl.com.ease_camera_library;
 public interface CameraInterface {
   void qrMode();
 
+  void photoMode();
+
   void photographyMode();
 
   void faceMode();
 
   void openAlbum();
 
-  void doCamera();
+  void takePhoto();
 
   void changeCamera();
 
   void openFlash(boolean isOpen);
+
 }

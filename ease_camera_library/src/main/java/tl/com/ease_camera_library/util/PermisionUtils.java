@@ -1,4 +1,4 @@
-package tl.com.ease_camera_library;
+package tl.com.ease_camera_library.util;
 
 import android.Manifest;
 import android.app.Activity;

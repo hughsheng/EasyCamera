@@ -1,4 +1,4 @@
-package tl.com.ease_camera_library;
+package tl.com.ease_camera_library.base;
 
 import android.app.Fragment;
 import android.content.pm.PackageManager;
@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import tl.com.ease_camera_library.util.PermisionUtils;
+import tl.com.ease_camera_library.R;
 import tl.com.ease_camera_library.camera2.Camera2Fragment;
 import tl.com.ease_camera_library.camera2.CameraManagerUtil;
 
