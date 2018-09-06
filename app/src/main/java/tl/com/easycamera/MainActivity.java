@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.fragment_camera);
+    setContentView(R.layout.activity_camera);
     cameraFragment = CameraFragment.newInstance();
     if (null == savedInstanceState) {
       getSupportFragmentManager().beginTransaction()

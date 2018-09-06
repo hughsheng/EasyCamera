@@ -65,28 +65,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
   }
 
-  @Nullable
-  @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
-      savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_camera, container, false);
-  }
 
 
-  @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    camera_sv = view.findViewById(R.id.camera_sv);
-    qr_code_tv = view.findViewById(R.id.qr_code_tv);
-    capture_tv = view.findViewById(R.id.capture_tv);
-    photography_tv = view.findViewById(R.id.photography_tv);
-    face_tv = view.findViewById(R.id.face_tv);
-    album_iv = view.findViewById(R.id.album_iv);
-    camera_iv = view.findViewById(R.id.camera_iv);
-    change_camera_iv = view.findViewById(R.id.change_camera_iv);
-    cameraManagerUtil = new CameraManagerUtil(mBackgroundHandler, null, null, null, null,
-        getActivity(), camera_sv.getHolder());
-    setListener();
-  }
+
+
 
 
   @Override
@@ -128,22 +110,22 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
   @Override
   public void onClick(View view) {
-    int id = view.getId();
-    if (id == R.id.qr_code_tv) {
-      qrMode();
-    } else if (id == R.id.capture_tv) {
-      photographyMode();
-    } else if (id == R.id.photography_tv) {
-      captureMode();
-    } else if (id == R.id.face_tv) {
-      faceMode();
-    } else if (id == R.id.album_iv) {
-      openAlbum();
-    } else if (id == R.id.camera_iv) {
-      doCamera();
-    } else if (id == R.id.change_camera_iv) {
-      changeCamera();
-    }
+//    int id = view.getId();
+//    if (id == R.id.qr_code_tv) {
+//      qrMode();
+//    } else if (id == R.id.capture_tv) {
+//      photographyMode();
+//    } else if (id == R.id.photography_tv) {
+//      captureMode();
+//    } else if (id == R.id.face_tv) {
+//      faceMode();
+//    } else if (id == R.id.album_iv) {
+//      openAlbum();
+//    } else if (id == R.id.camera_iv) {
+//      doCamera();
+//    } else if (id == R.id.change_camera_iv) {
+//      changeCamera();
+//    }
   }
 
 

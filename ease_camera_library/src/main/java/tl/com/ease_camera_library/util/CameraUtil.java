@@ -150,13 +150,19 @@ public class CameraUtil {
     return orientation;
   }
 
-  public static Bitmap getProperBitmap(byte[] data, Context context, Camera.Size previewSize) {
+  public static Bitmap getProperBitmap(byte[] data, Context context, Camera.Size previewSize, int
+      opendCameraID) {
     Bitmap bmp = decodeToBitMap(data, previewSize);
     // 定义矩阵对象
     Matrix matrix = new Matrix();
     // 缩放原图
     matrix.postScale(1f, 1f);
-    matrix.postRotate(-getOrientation(context));
+    if (opendCameraID == Camera.CameraInfo.CAMERA_FACING_BACK) {
+      matrix.postRotate(getOrientation(context));
+    } else if (opendCameraID == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+      matrix.postRotate(-getOrientation(context));
+    }
+
     if (bmp != null) {
       return Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(),
           matrix, true);

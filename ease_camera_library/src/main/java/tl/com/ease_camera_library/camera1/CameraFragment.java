@@ -229,7 +229,6 @@ public class CameraFragment extends Fragment implements CameraInterface, CameraM
 
   private void addFaceFrame() {
     mFaceView = new FaceOverlayView(getContext(), cameraManager.getPreviewSize());
-    mFaceView.setFront(true);
     mFaceView.setDisplayOrientation(CameraUtil.getOrientation(getContext()));
     getActivity().addContentView(mFaceView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -326,6 +325,7 @@ public class CameraFragment extends Fragment implements CameraInterface, CameraM
 
       case ConstanceValues.FACE_DRAW:
         List<VisionDetRet> detect = (List<VisionDetRet>) msg.obj;
+        mFaceView.setOpendCameraID(cameraManager.getOpendCameraID());
         mFaceView.setFaces(detect);//发送人脸数据，绘制人脸框
         Map<String, Float> scaleMap = new HashMap<>();
         scaleMap.put("scaleX", mFaceView.getScaleX());

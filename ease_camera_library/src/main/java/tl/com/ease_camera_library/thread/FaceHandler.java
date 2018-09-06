@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.util.LruCache;
-import android.util.Base64;
 
 import com.tzutalin.dlib.Constants;
 import com.tzutalin.dlib.FaceDet;
@@ -50,7 +49,8 @@ public class FaceHandler extends Handler {
     switch (msg.what) {
       case ConstanceValues.FACE_DETECH:
         byte[] data = (byte[]) msg.obj;
-        photoBitmap = CameraUtil.getProperBitmap(data, context,cameraManager.getPreviewSize());
+        photoBitmap = CameraUtil.getProperBitmap(data, context, cameraManager.getPreviewSize(),
+            cameraManager.getOpendCameraID());
         if (photoBitmap == null) {
           resultHandler.sendEmptyMessage(ConstanceValues.FACE_NO_PHOTO);//未检测到图像
           break;
@@ -59,6 +59,7 @@ public class FaceHandler extends Handler {
           mFaceDet = new FaceDet(Constants.getFaceShapeModelPath());
         }
         detect = mFaceDet.detect(photoBitmap);//检测人脸
+         //String base64=BitmapUtil.bitmapToBase64(photoBitmap,100 );
         if (detect == null || detect.size() == 0) {
           photoBitmap.recycle();
           resultHandler.sendEmptyMessage(ConstanceValues.FACE_FAIL);//未检测到人脸
@@ -141,9 +142,7 @@ public class FaceHandler extends Handler {
 //      // 获取面部姿势
 //      // 传入X则获取到x方向上的角度，传入Y则获取到y方向上的角度，传入Z则获取到z方向上的角度
 //      float angle = face1.pose(FaceDetector.Face.EULER_X);
-//
-//
-//      // todo 在bitmap上绘制一个Rect框住脸，因为返回的是眼睛位置，所以还要做一些处理
+
 //    }
 //
 //    return findFaceCount > 0;
@@ -154,7 +153,6 @@ public class FaceHandler extends Handler {
     int maxMemory = (int) Runtime.getRuntime().maxMemory();
     int cacheSize = maxMemory / 8;
     // 设置图片缓存大小为程序最大可用内存的1/8
-    mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-    };
+    mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {};
   }
 }
