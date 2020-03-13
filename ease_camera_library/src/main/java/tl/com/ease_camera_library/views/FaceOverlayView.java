@@ -18,10 +18,6 @@ import com.tzutalin.dlib.VisionDetRet;
 import java.util.List;
 
 /**
- * Created by xiekang on 1/23/2018.
- */
-
-/**
  * 描绘脸部位置
  */
 public class FaceOverlayView extends View {
