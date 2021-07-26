@@ -12,9 +12,6 @@ import android.hardware.Camera;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
-
-import com.tzutalin.dlib.VisionDetRet;
-
 import java.util.List;
 
 /**
@@ -28,7 +25,7 @@ public class FaceOverlayView extends View {
   private int previewWidth;
   private int previewHeight;
   private int opendCameraID;//默认打开的是后置摄像头
-  private List<VisionDetRet> face;
+ // private List<VisionDetRet> face;
 
 
   public FaceOverlayView(Context context, Camera.Size previewSize) {
@@ -59,10 +56,10 @@ public class FaceOverlayView extends View {
     previewHeight=previewSize.height;
   }
 
-  public void setFaces(List<VisionDetRet> faces) {
-    face = faces;
-    invalidate();
-  }
+//  public void setFaces(List<VisionDetRet> faces) {
+//    face = faces;
+//    invalidate();
+//  }
 
   public void setOpendCameraID(int opendCameraID) {
     this.opendCameraID = opendCameraID;
@@ -76,23 +73,23 @@ public class FaceOverlayView extends View {
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-    if (face != null && face.size() > 0) {
-      float scaleX = getScaleX();
-      float scaleY = getScaleY();
-      for (VisionDetRet visionDetRet : face) {
-        if (opendCameraID == Camera.CameraInfo.CAMERA_FACING_BACK) {
-          canvas.drawRect(visionDetRet.getLeft() *scaleX, visionDetRet.getTop() * scaleY,
-              visionDetRet.getRight() * scaleX, visionDetRet.getBottom() * scaleY, mPaint);
-        } else if (opendCameraID == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-          canvas.drawRect(getWidth() - visionDetRet.getRight() * scaleX, visionDetRet.getTop() *
-              scaleY, getWidth() - visionDetRet.getLeft() * scaleX, visionDetRet.getBottom() *
-              scaleY, mPaint);
-        }
-
-        canvas.save();
-        canvas.restore();
-      }
-    }
+//    if (face != null && face.size() > 0) {
+//      float scaleX = getScaleX();
+//      float scaleY = getScaleY();
+//      for (VisionDetRet visionDetRet : face) {
+//        if (opendCameraID == Camera.CameraInfo.CAMERA_FACING_BACK) {
+//          canvas.drawRect(visionDetRet.getLeft() *scaleX, visionDetRet.getTop() * scaleY,
+//              visionDetRet.getRight() * scaleX, visionDetRet.getBottom() * scaleY, mPaint);
+//        } else if (opendCameraID == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+//          canvas.drawRect(getWidth() - visionDetRet.getRight() * scaleX, visionDetRet.getTop() *
+//              scaleY, getWidth() - visionDetRet.getLeft() * scaleX, visionDetRet.getBottom() *
+//              scaleY, mPaint);
+//        }
+//
+//        canvas.save();
+//        canvas.restore();
+//      }
+//    }
   }
 
   public float getScaleX() {

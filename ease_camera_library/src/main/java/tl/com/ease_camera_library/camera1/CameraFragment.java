@@ -8,9 +8,6 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -19,11 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.zxing.Result;
-import com.tzutalin.dlib.VisionDetRet;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
+import com.google.zxing.Result;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import tl.com.ease_camera_library.R;
@@ -304,7 +302,7 @@ public class CameraFragment extends Fragment implements CameraInterface, CameraM
 
       case ConstanceValues.FACE_SUCCESS:
         Toast.makeText(getContext(), "检测到人脸", Toast.LENGTH_SHORT).show();
-        mFaceView.setFaces(null);
+        //mFaceView.setFaces(null);
         cameraManager.setPreviewCallback(this);
         break;
 
@@ -324,17 +322,17 @@ public class CameraFragment extends Fragment implements CameraInterface, CameraM
         break;
 
       case ConstanceValues.FACE_DRAW:
-        List<VisionDetRet> detect = (List<VisionDetRet>) msg.obj;
-        mFaceView.setOpendCameraID(cameraManager.getOpendCameraID());
-        mFaceView.setFaces(detect);//发送人脸数据，绘制人脸框
-        Map<String, Float> scaleMap = new HashMap<>();
-        scaleMap.put("scaleX", mFaceView.getScaleX());
-        scaleMap.put("scaleY", mFaceView.getScaleY());
-        scaleMap.put("screenWidth", (float) screenWidth);
-        scaleMap.put("screenHeight", (float) screenHeight);
-        Message drawOverMsg = faceThread.getFaceHandler().obtainMessage(ConstanceValues
-            .FACE_DRAW_OVER, scaleMap);
-        faceThread.getFaceHandler().sendMessage(drawOverMsg);
+//        List<VisionDetRet> detect = (List<VisionDetRet>) msg.obj;
+//        mFaceView.setOpendCameraID(cameraManager.getOpendCameraID());
+//        mFaceView.setFaces(detect);//发送人脸数据，绘制人脸框
+//        Map<String, Float> scaleMap = new HashMap<>();
+//        scaleMap.put("scaleX", mFaceView.getScaleX());
+//        scaleMap.put("scaleY", mFaceView.getScaleY());
+//        scaleMap.put("screenWidth", (float) screenWidth);
+//        scaleMap.put("screenHeight", (float) screenHeight);
+//        Message drawOverMsg = faceThread.getFaceHandler().obtainMessage(ConstanceValues
+//            .FACE_DRAW_OVER, scaleMap);
+//        faceThread.getFaceHandler().sendMessage(drawOverMsg);
         break;
 
       case ConstanceValues.FACE_NO_PHOTO:

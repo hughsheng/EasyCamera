@@ -16,9 +16,10 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.SurfaceHolder;
+
+import androidx.annotation.NonNull;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

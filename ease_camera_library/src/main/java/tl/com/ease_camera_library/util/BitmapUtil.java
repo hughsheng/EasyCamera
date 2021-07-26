@@ -10,8 +10,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Base64;
 
-import com.tzutalin.dlib.VisionDetRet;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -260,30 +258,30 @@ public class BitmapUtil {
   }
 
 
-  public static byte[] resultBitmapData(VisionDetRet faceBean, Bitmap bitmap) {
-    int left = faceBean.getLeft();
-    int top = faceBean.getTop();
-    int right = faceBean.getRight();
-    int bottom = faceBean.getBottom();
+//  public static byte[] resultBitmapData(VisionDetRet faceBean, Bitmap bitmap) {
+//    int left = faceBean.getLeft();
+//    int top = faceBean.getTop();
+//    int right = faceBean.getRight();
+//    int bottom = faceBean.getBottom();
+//
+//    Bitmap curBitmap = cutBitmap(bitmap, left, right, top, bottom);
+//    Bitmap mirrorBitmap = mirrorImg(curBitmap);
+//    ByteArrayOutputStream os = new ByteArrayOutputStream();
+//    mirrorBitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+//    mirrorBitmap.recycle();
+//    curBitmap.recycle();
+//    return os.toByteArray();
+//  }
 
-    Bitmap curBitmap = cutBitmap(bitmap, left, right, top, bottom);
-    Bitmap mirrorBitmap = mirrorImg(curBitmap);
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    mirrorBitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-    mirrorBitmap.recycle();
-    curBitmap.recycle();
-    return os.toByteArray();
-  }
 
-
-  public static Bitmap resultBitmap(VisionDetRet faceBean, Bitmap bitmap) {
-    int left = faceBean.getLeft();
-    int top = faceBean.getTop();
-    int right = faceBean.getRight();
-    int bottom = faceBean.getBottom();
-    Bitmap curBitmap = cutBitmap(bitmap, left, right, top, bottom);
-    return mirrorImg(curBitmap);
-  }
+//  public static Bitmap resultBitmap(VisionDetRet faceBean, Bitmap bitmap) {
+//    int left = faceBean.getLeft();
+//    int top = faceBean.getTop();
+//    int right = faceBean.getRight();
+//    int bottom = faceBean.getBottom();
+//    Bitmap curBitmap = cutBitmap(bitmap, left, right, top, bottom);
+//    return mirrorImg(curBitmap);
+//  }
 
 
   public static Bitmap cutBitmap(Bitmap bitmap, int left, int right, int top, int bottom) {

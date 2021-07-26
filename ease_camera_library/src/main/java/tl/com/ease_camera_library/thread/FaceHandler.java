@@ -4,11 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.util.LruCache;
-
-import com.tzutalin.dlib.Constants;
-import com.tzutalin.dlib.FaceDet;
-import com.tzutalin.dlib.VisionDetRet;
+import android.util.LruCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +21,9 @@ import tl.com.ease_camera_library.util.ConstanceValues;
 public class FaceHandler extends Handler {
   private CameraManager cameraManager;
   private Handler resultHandler;
-  private List<VisionDetRet> detect;
-  private FaceDet mFaceDet;
-  private List<VisionDetRet> faceBeanList;//一次连拍照片集合
+  //private List<VisionDetRet> detect;
+  //private FaceDet mFaceDet;
+ // private List<VisionDetRet> faceBeanList;//一次连拍照片集合
   private Bitmap photoBitmap;
   private Context context;
 
@@ -46,75 +42,75 @@ public class FaceHandler extends Handler {
 
   @Override
   public void handleMessage(Message msg) {
-    switch (msg.what) {
-      case ConstanceValues.FACE_DETECH:
-        byte[] data = (byte[]) msg.obj;
-        photoBitmap = CameraUtil.getProperBitmap(data, context, cameraManager.getPreviewSize(),
-            cameraManager.getOpendCameraID());
-        if (photoBitmap == null) {
-          resultHandler.sendEmptyMessage(ConstanceValues.FACE_NO_PHOTO);//未检测到图像
-          break;
-        }
-        if (mFaceDet == null) {
-          mFaceDet = new FaceDet(Constants.getFaceShapeModelPath());
-        }
-        detect = mFaceDet.detect(photoBitmap);//检测人脸
-         //String base64=BitmapUtil.bitmapToBase64(photoBitmap,100 );
-        if (detect == null || detect.size() == 0) {
-          photoBitmap.recycle();
-          resultHandler.sendEmptyMessage(ConstanceValues.FACE_FAIL);//未检测到人脸
-          break;
-        }
-
-        Message drawMessage = resultHandler.obtainMessage(ConstanceValues.FACE_DRAW, detect);
-        resultHandler.sendMessage(drawMessage);//绘制人脸框
-
-        VisionDetRet faceBean = CameraUtil.getMaxFace(detect);//获取最大人脸
-        if (faceBeanList == null) {
-          faceBeanList = new ArrayList<VisionDetRet>();
-        }
-        faceBeanList.add(faceBean);//保存获取到的人脸数据
-        break;
-
-      case ConstanceValues.FACE_DRAW_OVER:
-
-        //              if (faceBeanList.size() < ConstantValue.FACENUM) {
-//                continue;
-//              }
-
-
-//              if (!CameraUtil.isFaceClear(faceBeanList)) {//判断人脸是否清晰
-//                faceBeanList.clear();
-//                handler.sendEmptyMessage(ConstantValue.HANDLER_FACE_UNCLEAR);
-//                continue;
-//              }
-
-        VisionDetRet faceBeanEnd = faceBeanList.get(faceBeanList.size() - 1);
-        Map scaleMap = (Map) msg.obj;
-        //判断人脸是否完整
-        if (!CameraUtil.isGetfitFace(faceBeanEnd, (float) scaleMap.get("scaleX"), (float)
-            scaleMap.get("scaleY"), (float) scaleMap.get("screenWidth"), (float) scaleMap.get
-            ("screenHeight"))) {
-          faceBeanList.clear();
-          photoBitmap.recycle();
-          resultHandler.sendEmptyMessage(ConstanceValues.FACE_IMPERFECT);
-        } else {
-          byte[] padImgBytes = BitmapUtil.resultBitmapData(faceBeanEnd, photoBitmap);//获取人脸照片流
-          faceBeanList.clear();
-//              ConstantValue.FACE_IMAGE = padImgBytes;
-//              ConstantValue.FULL_IMAGE = CommonUtil.bitmapToByte(bitmap);
-
-          mMemoryCache.put(ConstanceValues.FACE_CACHE, BitmapUtil.resultBitmap(faceBeanEnd,
-              photoBitmap));
-          mMemoryCache.put(ConstanceValues.FULL_CACHE, BitmapUtil.mirrorImg(photoBitmap));
-          Message successMessage = resultHandler.obtainMessage(ConstanceValues.FACE_SUCCESS,
-              mMemoryCache);
-          resultHandler.sendMessage(successMessage);
-          photoBitmap.recycle();
-        }
-
-        break;
-    }
+//    switch (msg.what) {
+//      case ConstanceValues.FACE_DETECH:
+//        byte[] data = (byte[]) msg.obj;
+//        photoBitmap = CameraUtil.getProperBitmap(data, context, cameraManager.getPreviewSize(),
+//            cameraManager.getOpendCameraID());
+//        if (photoBitmap == null) {
+//          resultHandler.sendEmptyMessage(ConstanceValues.FACE_NO_PHOTO);//未检测到图像
+//          break;
+//        }
+//        if (mFaceDet == null) {
+//          mFaceDet = new FaceDet(Constants.getFaceShapeModelPath());
+//        }
+//        detect = mFaceDet.detect(photoBitmap);//检测人脸
+//         //String base64=BitmapUtil.bitmapToBase64(photoBitmap,100 );
+//        if (detect == null || detect.size() == 0) {
+//          photoBitmap.recycle();
+//          resultHandler.sendEmptyMessage(ConstanceValues.FACE_FAIL);//未检测到人脸
+//          break;
+//        }
+//
+//        Message drawMessage = resultHandler.obtainMessage(ConstanceValues.FACE_DRAW, detect);
+//        resultHandler.sendMessage(drawMessage);//绘制人脸框
+//
+//        VisionDetRet faceBean = CameraUtil.getMaxFace(detect);//获取最大人脸
+//        if (faceBeanList == null) {
+//          faceBeanList = new ArrayList<VisionDetRet>();
+//        }
+//        faceBeanList.add(faceBean);//保存获取到的人脸数据
+//        break;
+//
+//      case ConstanceValues.FACE_DRAW_OVER:
+//
+//        //              if (faceBeanList.size() < ConstantValue.FACENUM) {
+////                continue;
+////              }
+//
+//
+////              if (!CameraUtil.isFaceClear(faceBeanList)) {//判断人脸是否清晰
+////                faceBeanList.clear();
+////                handler.sendEmptyMessage(ConstantValue.HANDLER_FACE_UNCLEAR);
+////                continue;
+////              }
+//
+//        VisionDetRet faceBeanEnd = faceBeanList.get(faceBeanList.size() - 1);
+//        Map scaleMap = (Map) msg.obj;
+//        //判断人脸是否完整
+//        if (!CameraUtil.isGetfitFace(faceBeanEnd, (float) scaleMap.get("scaleX"), (float)
+//            scaleMap.get("scaleY"), (float) scaleMap.get("screenWidth"), (float) scaleMap.get
+//            ("screenHeight"))) {
+//          faceBeanList.clear();
+//          photoBitmap.recycle();
+//          resultHandler.sendEmptyMessage(ConstanceValues.FACE_IMPERFECT);
+//        } else {
+//          byte[] padImgBytes = BitmapUtil.resultBitmapData(faceBeanEnd, photoBitmap);//获取人脸照片流
+//          faceBeanList.clear();
+////              ConstantValue.FACE_IMAGE = padImgBytes;
+////              ConstantValue.FULL_IMAGE = CommonUtil.bitmapToByte(bitmap);
+//
+//          mMemoryCache.put(ConstanceValues.FACE_CACHE, BitmapUtil.resultBitmap(faceBeanEnd,
+//              photoBitmap));
+//          mMemoryCache.put(ConstanceValues.FULL_CACHE, BitmapUtil.mirrorImg(photoBitmap));
+//          Message successMessage = resultHandler.obtainMessage(ConstanceValues.FACE_SUCCESS,
+//              mMemoryCache);
+//          resultHandler.sendMessage(successMessage);
+//          photoBitmap.recycle();
+//        }
+//
+//        break;
+//    }
   }
 
   //原生的人脸检测api效果很差，建议不要使用

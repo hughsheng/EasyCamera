@@ -12,8 +12,6 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.tzutalin.dlib.VisionDetRet;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,29 +26,29 @@ public class CameraUtil {
    * @param faceDetRets
    * @return
    */
-  public static VisionDetRet getMaxFace(List<VisionDetRet> faceDetRets) {
-    if (faceDetRets.size() == 1) {
-      return faceDetRets.get(0);
-    }
-    List<FaceRectBean> rectBeanList = new ArrayList<>();
-    int position = 0;
-    for (int i = 0; i < faceDetRets.size(); i++) {
-      VisionDetRet faceDetRet = faceDetRets.get(i);
-      FaceRectBean rectBean = new FaceRectBean();
-      rectBean.setOrder(i);
-      rectBean.setAcreage(Math.abs(faceDetRet.getBottom() - faceDetRet.getTop()) *
-          Math.abs(faceDetRet.getLeft() - faceDetRet.getRight()));
-      rectBeanList.add(rectBean);
-    }
-    float max = rectBeanList.get(0).getAcreage();
-    for (int j = 0; j < rectBeanList.size(); j++) {
-      if (rectBeanList.get(j).getAcreage() > max) {
-        max = rectBeanList.get(j).getAcreage();
-        position = j;
-      }
-    }
-    return faceDetRets.get(position);
-  }
+//  public static VisionDetRet getMaxFace(List<VisionDetRet> faceDetRets) {
+//    if (faceDetRets.size() == 1) {
+//      return faceDetRets.get(0);
+//    }
+//    List<FaceRectBean> rectBeanList = new ArrayList<>();
+//    int position = 0;
+//    for (int i = 0; i < faceDetRets.size(); i++) {
+//      VisionDetRet faceDetRet = faceDetRets.get(i);
+//      FaceRectBean rectBean = new FaceRectBean();
+//      rectBean.setOrder(i);
+//      rectBean.setAcreage(Math.abs(faceDetRet.getBottom() - faceDetRet.getTop()) *
+//          Math.abs(faceDetRet.getLeft() - faceDetRet.getRight()));
+//      rectBeanList.add(rectBean);
+//    }
+//    float max = rectBeanList.get(0).getAcreage();
+//    for (int j = 0; j < rectBeanList.size(); j++) {
+//      if (rectBeanList.get(j).getAcreage() > max) {
+//        max = rectBeanList.get(j).getAcreage();
+//        position = j;
+//      }
+//    }
+//    return faceDetRets.get(position);
+//  }
 
   /**
    * 判断获取的人脸是否符合要求
@@ -59,25 +57,25 @@ public class CameraUtil {
    * @param faceBean
    * @return
    */
-  public static boolean isGetfitFace(VisionDetRet faceBean, float scaleX, float scaleY, float
-      screenWidth, float screenHight) {
-
-    int faceTop = faceBean.getTop();
-    int faceBottom = faceBean.getBottom();
-    int faceRight = faceBean.getRight();
-    int faceLeft = faceBean.getLeft();
-
-    int acreage = Math.abs(faceTop - faceBottom) * Math.abs(faceRight - faceLeft);
-
-    float left = screenWidth - faceRight * scaleX;//左边距
-    float right = faceLeft * scaleX;//右边距
-    float top = faceTop * scaleY;//上边距
-    float bottom = screenHight - faceBottom * scaleY;//下边距
-
-    return (left > ConstanceValues.POSITION_LIMIT && right > ConstanceValues
-        .POSITION_LIMIT && top > ConstanceValues.POSITION_LIMIT &&
-        bottom > ConstanceValues.POSITION_LIMIT && acreage > ConstanceValues.FACE_MIN_AREA);
-  }
+//  public static boolean isGetfitFace(VisionDetRet faceBean, float scaleX, float scaleY, float
+//      screenWidth, float screenHight) {
+//
+//    int faceTop = faceBean.getTop();
+//    int faceBottom = faceBean.getBottom();
+//    int faceRight = faceBean.getRight();
+//    int faceLeft = faceBean.getLeft();
+//
+//    int acreage = Math.abs(faceTop - faceBottom) * Math.abs(faceRight - faceLeft);
+//
+//    float left = screenWidth - faceRight * scaleX;//左边距
+//    float right = faceLeft * scaleX;//右边距
+//    float top = faceTop * scaleY;//上边距
+//    float bottom = screenHight - faceBottom * scaleY;//下边距
+//
+//    return (left > ConstanceValues.POSITION_LIMIT && right > ConstanceValues
+//        .POSITION_LIMIT && top > ConstanceValues.POSITION_LIMIT &&
+//        bottom > ConstanceValues.POSITION_LIMIT && acreage > ConstanceValues.FACE_MIN_AREA);
+//  }
 
   /**
    * 判断获取的图片是否清晰
@@ -86,30 +84,30 @@ public class CameraUtil {
    * @param faceBeanList
    * @return
    */
-  public static boolean isFaceClear(List<VisionDetRet> faceBeanList) {
-    int size = faceBeanList.size();
-    if (size == 1) {//当只识别一张则直接返回
-      return true;
-    }
-    int firstTop = faceBeanList.get(0).getTop();
-    int firstBottom = faceBeanList.get(0).getBottom();
-    int firstRight = faceBeanList.get(0).getRight();
-    int firstLeft = faceBeanList.get(0).getLeft();
-
-    int lastTop = faceBeanList.get(size - 1).getTop();
-    int lastBottom = faceBeanList.get(size - 1).getBottom();
-    int lastRight = faceBeanList.get(size - 1).getRight();
-    int lastLeft = faceBeanList.get(size - 1).getLeft();
-
-    int moveTop = Math.abs(firstTop - lastTop);
-    int moveBottom = Math.abs(firstBottom - lastBottom);
-    int moveRight = Math.abs(firstRight - lastRight);
-    int moveLeft = Math.abs(firstLeft - lastLeft);
-
-    return (moveTop < ConstanceValues.MOVELIMIT && moveBottom < ConstanceValues.MOVELIMIT &&
-        moveLeft
-            < ConstanceValues.MOVELIMIT && moveRight < ConstanceValues.MOVELIMIT);
-  }
+//  public static boolean isFaceClear(List<VisionDetRet> faceBeanList) {
+//    int size = faceBeanList.size();
+//    if (size == 1) {//当只识别一张则直接返回
+//      return true;
+//    }
+//    int firstTop = faceBeanList.get(0).getTop();
+//    int firstBottom = faceBeanList.get(0).getBottom();
+//    int firstRight = faceBeanList.get(0).getRight();
+//    int firstLeft = faceBeanList.get(0).getLeft();
+//
+//    int lastTop = faceBeanList.get(size - 1).getTop();
+//    int lastBottom = faceBeanList.get(size - 1).getBottom();
+//    int lastRight = faceBeanList.get(size - 1).getRight();
+//    int lastLeft = faceBeanList.get(size - 1).getLeft();
+//
+//    int moveTop = Math.abs(firstTop - lastTop);
+//    int moveBottom = Math.abs(firstBottom - lastBottom);
+//    int moveRight = Math.abs(firstRight - lastRight);
+//    int moveLeft = Math.abs(firstLeft - lastLeft);
+//
+//    return (moveTop < ConstanceValues.MOVELIMIT && moveBottom < ConstanceValues.MOVELIMIT &&
+//        moveLeft
+//            < ConstanceValues.MOVELIMIT && moveRight < ConstanceValues.MOVELIMIT);
+//  }
 
 
   /**
